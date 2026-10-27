@@ -1,0 +1,1644 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#103e58">
+    <title>BaBaW | NCR Flood Information Platform</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ======================================
+     BABAW LOGO
+====================================== -->
+
+
+    <template id="logoTemplate">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="white" stroke="#222" stroke-width="1.5" />
+
+
+            <path d="M17 46 L33 29 L43 39 L51 27 L69 27 L83 45" fill="none" stroke="#222" stroke-width="5" />
+
+
+            <path d="M29 44 L34 36 L43 45 M57 43 L70 31 L82 45" fill="none" stroke="#222" stroke-width="3" />
+
+
+            <path d="M10 49 Q25 44 40 49 T70 49 T90 49
+           Q74 54 59 52 T30 54 T10 49" fill="#0874b9" />
+
+
+            <path d="M17 57 Q35 51 50 57 T83 57
+           Q65 64 47 61 T17 57" fill="#239be0" />
+
+
+            <text x="50" y="81" font-size="20" text-anchor="middle" font-family="Georgia,serif"
+                fill="#0754b6">BaBaW</text>
+
+
+            <path d="M20 85 H80" stroke="#222" stroke-width=".7" />
+        </svg>
+    </template>
+
+
+    <!-- ======================================
+     LOGIN SCREEN
+====================================== -->
+
+
+    <div id="authScreen" class="auth">
+
+
+        <div class="auth-left">
+
+
+            <div class="brand">
+                <div class="brand-logo logo-slot"></div>
+
+
+                <div>
+                    <div class="brand-title">BaBaW</div>
+                    <div class="brand-sub" style="color:#b8d7e7">
+                        NCR FLOOD INFORMATION PLATFORM
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
+                <h1>
+                    Stay informed.<br>
+                    Stay prepared.<br>
+                    Stay above the flood.
+                </h1>
+
+
+                <p>
+                    A location-aware flood information dashboard for the
+                    National Capital Region, combining weather forecasts,
+                    interactive maps, and government information resources.
+                </p>
+            </div>
+
+
+            <div class="small">
+                © 2026 BaBaW · Academic Prototype
+            </div>
+
+
+        </div>
+
+
+        <div class="auth-right">
+
+
+            <div class="auth-box">
+
+
+                <div id="loginView">
+
+
+                    <h2>Welcome back</h2>
+                    <p>Sign in to access your flood information dashboard.</p>
+
+
+                    <form id="loginForm">
+
+
+                        <div class="field">
+                            <label for="loginEmail">Email address</label>
+                            <input type="email" id="loginEmail" required autocomplete="email"
+                                placeholder="Email address">
+                        </div>
+
+
+                        <div class="field">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required autocomplete="current-password"
+                                placeholder="Password">
+                        </div>
+
+
+                        <label class="remember-option"><input type="checkbox" id="rememberMe"> Remember me on this device</label>
+                        <p class="error" id="loginError" role="alert"></p>
+
+
+                        <button class="btn auth-submit" type="submit">
+                            Sign in →
+                        </button>
+
+
+                    </form>
+
+
+                    <button type="button" class="btn-light" id="guestBtn" style="width:100%;margin-top:10px">Continue as guest</button>
+
+
+                    <div class="auth-switch">
+                        Don't have an account?
+                        <button id="showRegister" type="button">
+                            Create account
+                        </button>
+                    </div>
+
+
+                </div>
+
+
+                <div id="registerView" class="hidden">
+
+
+                    <h2>Create your account</h2>
+                    <p>Register for a demonstration account.</p>
+
+
+                    <form id="registerForm">
+
+
+                        <div class="field">
+                            <label for="registerName">Full name</label>
+                            <input id="registerName" required autocomplete="name">
+                        </div>
+
+
+                        <div class="field">
+                            <label for="registerEmail">Email address</label>
+                            <input id="registerEmail" type="email" required autocomplete="email">
+                        </div>
+
+
+                        <div class="field">
+                            <label for="registerPassword">Password</label>
+                            <input id="registerPassword" type="password" minlength="8" required
+                                autocomplete="new-password">
+                        </div>
+
+
+                        <div class="field">
+                            <label for="confirmPassword">Confirm password</label>
+                            <input id="confirmPassword" type="password" required autocomplete="new-password">
+                        </div>
+
+
+                        <p class="error" id="registerError" role="alert"></p>
+
+
+                        <button class="btn auth-submit" type="submit">
+                            Create account →
+                        </button>
+
+
+                    </form>
+
+
+                    <div class="auth-switch">
+                        Already registered?
+                        <button id="showLogin" type="button">
+                            Sign in
+                        </button>
+                    </div>
+
+
+                </div>
+
+
+                <div class="demo-note">
+                    Demonstration only. Accounts are stored in memory until
+                    the page reloads. Do not use your real password.
+                    Production login requires secure server-side authentication.
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!-- ======================================
+     MAIN APPLICATION
+====================================== -->
+
+
+    <div id="application" class="hidden">
+
+
+        <div class="top-strip">
+            <div class="container" data-i18n="notice">
+                ⓘ NCR FLOOD INFORMATION · Not an official emergency warning service
+            </div>
+        </div>
+
+
+        <header class="site-header">
+
+
+            <div class="container header-inner">
+
+
+                <div class="brand">
+                    <div class="brand-logo logo-slot"></div>
+
+
+                    <div>
+                        <div class="brand-title">BaBaW</div>
+                        <div class="brand-sub" data-i18n="brand_sub">
+                            NCR FLOOD INFORMATION
+                        </div>
+                    </div>
+                </div>
+
+
+                <nav aria-label="Main navigation">
+                    <a href="#overview" class="active" data-i18n="nav_overview">Overview</a>
+                    <a href="#mapSection" data-i18n="nav_map">Flood map</a>
+                    <a href="#riverSection" data-i18n="nav_rivers">River levels</a>
+                    <a href="#weatherSection" data-i18n="nav_weather">Weather</a>
+                    <a href="#sourcesSection" data-i18n="nav_sources">Sources</a>
+                    <a href="#aboutSection" data-i18n="nav_about">About</a>
+                    <a href="#hotlinesSection" data-i18n="nav_hotlines">Hotlines</a>
+                </nav>
+
+
+                <div class="header-actions">
+                    <span class="user-label" id="userName">User</span>
+                    <button class="btn-light" id="profileBtn" type="button" data-i18n="profile">My profile</button>
+                    <button class="btn-light" id="logoutBtn">
+                        Logout
+                    </button>
+
+
+                    <button class="btn-light" id="langBtn" type="button">FIL</button>
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- Redesigned BaBaW landing section -->
+        <section class="babaw-hero" aria-labelledby="babawHeroTitle">
+            <div class="container babaw-hero-grid">
+                <div class="babaw-hero-copy">
+                    <span class="babaw-eyebrow">BANTAY BAHA WARNING SYSTEM · METRO MANILA</span>
+                    <h1 id="babawHeroTitle" data-i18n="babawHeroTitle">Know the weather.<br><span>Prepare for the water.</span></h1>
+                    <p data-i18n="babawHeroSub">Explore weather conditions, NCR city locations, modeled river information, and trusted government flood resources in one accessible dashboard.</p>
+                    <div class="babaw-hero-actions">
+                        <a class="babaw-primary-link" href="#overview" data-i18n="overview">Explore dashboard →</a>
+                        <a class="babaw-outline-link" href="#mapSection" data-i18n="map">View interactive map ↗</a>
+                    </div>
+                    <p class="babaw-hero-disclaimer" data-i18n="disclaimer">Academic prototype · Not an official flood warning service</p>
+                </div>
+                <div class="babaw-hero-panel">
+                    <div class="babaw-hero-panel-top"><span>BaBaW / INFORMATION HUB</span><span class="babaw-pulse"></span></div>
+                    <div class="babaw-feature"><span>01</span><div><strong>Weather conditions</strong><p>Forecasts powered by Open-Meteo</p></div></div>
+                    <div class="babaw-feature"><span>02</span><div><strong>Interactive NCR map</strong><p>Explore city locations and map layers</p></div></div>
+                    <div class="babaw-feature"><span>03</span><div><strong>Official information</strong><p>Find PAGASA and government advisories</p></div></div>
+                    <div class="babaw-hero-panel-bottom">River-level alerts are not connected to verified live gauges.</div>
+                </div>
+
+                <div class="panel pad flood-status" id="floodStatusCard">
+    <div class="section-head">
+        <div>
+            <h2>Forecast flood-risk level</h2>
+            <p id="floodMeta">Forecast-based · not an official warning</p>
+        </div>
+        <span class="level-badge" id="floodLevel">—</span>
+    </div>
+    <ul id="floodReasons" class="flood-reasons"></ul>
+
+    <strong>Official advisories posted by the team</strong>
+    <div id="advisoryList" class="advisory-list">Loading...</div>
+</div>
+            </div>
+        </section>
+        <div class="container babaw-shortcuts" aria-label="Dashboard shortcuts">
+            <a href="#weatherSection" class="babaw-shortcut"><span class="babaw-shortcut-icon">☁</span><div><strong>Weather forecasts</strong><small>Current conditions and rain outlook</small></div><span>↗</span></a>
+            <a href="#riverSection" class="babaw-shortcut"><span class="babaw-shortcut-icon">≋</span><div><strong>River information</strong><small>Modeled discharge and source links</small></div><span>↗</span></a>
+            <a href="#sourcesSection" class="babaw-shortcut"><span class="babaw-shortcut-icon">◎</span><div><strong>Government sources</strong><small>Official advisories and preparedness</small></div><span>↗</span></a>
+        </div>
+
+        <main class="container">
+
+
+            <!-- ==================================
+         OVERVIEW
+    ================================== -->
+
+
+            <section class="dashboard-section" id="overview">
+
+
+                <div class="crumb">
+                    Home / National Capital Region / Overview
+                </div>
+
+
+                <div class="heading">
+                    <div>
+                        <h1>Your local flood outlook</h1>
+                        <p>
+                            NCR weather, river information and government advisories
+                        </p>
+                    </div>
+
+
+                    <button class="btn-light" id="refreshBtn">
+                        ↻ Refresh weather
+                    </button>
+                </div>
+
+
+                <div class="location-card">
+
+
+                    <div>
+                        <strong id="locationName">
+                            Quezon City, NCR
+                        </strong>
+
+
+                        <p id="locationStatus" role="status">
+                            Select a city or allow location access.
+                        </p>
+                    </div>
+
+
+                    <div class="location-controls">
+                        <select id="citySelect" aria-label="Select NCR city">
+                        </select>
+
+
+                        <button class="btn" id="locateBtn">
+                            ◎ Use my location
+                        </button>
+                    </div>
+
+
+                </div>
+
+
+                <div class="notice">
+
+
+                    <div style="font-size:22px">⚠</div>
+
+
+                    <div>
+                        <strong data-i18n="notice_title">Official flood warning status is not connected</strong>
+                        <p data-i18n="notice_body">This website provides weather forecasts and government information links. It does not
+                            currently receive verified live river readings or official emergency alerts. Always consult PAGASA and local
+                            authorities for actual warnings.</p>
+                    </div>
+
+
+                </div>
+
+
+                <div class="section-head">
+
+
+                    <div>
+                        <h2>Local weather overview</h2>
+                        <p id="weatherLocation">
+                            Weather for the selected NCR location
+                        </p>
+                    </div>
+
+
+                    <span class="tag">Open-Meteo API</span>
+
+
+                </div>
+
+
+                <div class="metrics">
+
+
+                    <div class="panel metric">
+                        <div class="metric-label">
+                            Current temperature
+                        </div>
+
+
+                        <div class="metric-value" id="temperature">—</div>
+
+
+                        <p id="condition">Loading...</p>
+
+
+                        <div class="metric-foot" id="weatherTime">
+                            Open-Meteo
+                        </div>
+                    </div>
+
+
+                    <div class="panel metric">
+                        <div class="metric-label">
+                            Relative humidity
+                        </div>
+
+
+                        <div class="metric-value" id="humidity">—</div>
+
+
+                        <p>Model-based current conditions</p>
+
+
+                        <div class="metric-foot">
+                            Open-Meteo
+                        </div>
+                    </div>
+
+
+                    <div class="panel metric">
+                        <div class="metric-label">
+                            Forecast precipitation today
+                        </div>
+
+
+                        <div class="metric-value" id="rainfall">—</div>
+
+
+                        <p>Predicted daily total, not measured rainfall</p>
+
+
+                        <div class="metric-foot">
+                            Open-Meteo
+                        </div>
+                    </div>
+
+
+                    <div class="panel metric">
+                        <div class="metric-label">Peak rain (next 24 h)</div>
+                        <div class="metric-value" id="peakRain">—</div>
+                        <p id="rainChance">Chance of rain: —</p>
+                        <div class="metric-foot">
+                            <a href="https://pagasa.dost.gov.ph/flood" target="_blank" rel="noopener noreferrer">Official alerts: PAGASA
+                                ↗</a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- ==================================
+         INTERACTIVE MAP
+    ================================== -->
+
+
+            <section class="dashboard-section" id="mapSection">
+
+
+                <div class="section-head">
+
+
+                    <div>
+                        <h2>Interactive NCR flood information map</h2>
+                        <p>
+                            City reference points and your detected location
+                        </p>
+                    </div>
+
+
+                    <button class="btn-light" id="mapLocateBtn">
+                        ◎ Locate me
+                    </button>
+
+
+                </div>
+
+
+                <div class="map-grid">
+
+
+                    <div class="panel">
+
+
+                        <div class="map-top">
+                            <strong>National Capital Region</strong>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                                <button class="btn-light" id="facilitiesBtn" type="button">+ Hospitals &amp; fire stations</button>
+                                <button class="btn-light" id="radarBtn" type="button">+ Rain radar</button>
+                            </div>
+                        </div>
+
+
+                        <div id="mainMap"></div>
+
+
+                        <div class="map-caption">
+                            Blue: approximate city center ·
+                            Green: detected location.
+                            This is not a flood hazard map.
+                        </div>
+
+
+                    </div>
+
+
+                    <div>
+
+
+                        <div class="source-card">
+                            <span class="tag">Official government</span>
+
+
+                            <h3>PAGASA Flood Information</h3>
+
+
+                            <p>
+                                Flood bulletins and hydrological information.
+                            </p>
+
+
+                            <a href="https://pagasa.dost.gov.ph/flood" target="_blank" rel="noopener noreferrer">
+                                Check flood bulletins →
+                            </a>
+                        </div>
+
+
+                        <div class="source-card">
+                            <span class="tag">
+                                Government hazard information
+                            </span>
+
+
+                            <h3>HazardHunterPH</h3>
+
+
+                            <p>
+                                Location-based hazard assessments using
+                                government-generated hazard information.
+                            </p>
+
+
+                            <a href="https://hazardhunter.georisk.gov.ph/" target="_blank" rel="noopener noreferrer">
+                                Explore hazard assessments →
+                            </a>
+                        </div>
+
+
+                        <div class="source-card">
+                            <span class="tag">Official weather agency</span>
+
+
+                            <h3>DOST-PAGASA</h3>
+
+
+                            <p>
+                                Weather advisories, rainfall warnings and forecasts.
+                            </p>
+
+
+                            <a href="https://www.pagasa.dost.gov.ph/" target="_blank" rel="noopener noreferrer">
+                                Check weather advisories →
+                            </a>
+                        </div>
+
+
+                        <div class="source-card">
+                            <span class="tag">Government preparedness</span>
+
+
+                            <h3>NDRRMC / OCD</h3>
+
+
+                            <p>
+                                Disaster preparedness and emergency information.
+                            </p>
+
+
+                            <a href="https://ndrrmc.gov.ph/" target="_blank" rel="noopener noreferrer">
+                                Visit NDRRMC →
+                            </a>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- ==================================
+         RIVER MONITORING
+    ================================== -->
+
+
+            <section class="dashboard-section" id="riverSection">
+
+
+                <div class="section-head">
+
+
+                    <div>
+                        <h2>NCR river monitoring</h2>
+                        <p>
+                            Major river systems and verified measurement availability
+                        </p>
+                    </div>
+
+
+                    <a href="https://pagasa.dost.gov.ph/flood" target="_blank" rel="noopener noreferrer"
+                        class="btn-light">
+                        Official flood information ↗
+                    </a>
+
+
+                </div>
+
+
+                <div class="panel pad" id="dischargePanel">
+                    <strong>Modeled river discharge near selected location</strong>
+                    <p class="muted small">m³/s, past 7 days + 7-day forecast. Orange bar = today. Modeled estimate, not an official
+                        gauge reading.</p>
+                    <div class="bars" id="dischargeChart">Loading...</div>
+                </div>
+               
+                <div class="panel pad" style="margin-top:15px">
+                    <strong>Where to check official river levels</strong>
+                    <div id="riverList"></div>
+                </div>
+
+
+            </section>
+
+
+            <!-- ==================================
+         WEATHER FORECAST
+    ================================== -->
+
+
+            <section class="dashboard-section" id="weatherSection">
+
+
+                <div class="section-head">
+                    <div>
+                        <h2>Next 24 hours: forecast rain</h2>
+                        <p>Hourly precipitation in mm (model-based)</p>
+                    </div>
+                </div>
+                <div class="panel pad" style="margin-bottom:20px">
+                    <p id="rainSummary" class="rain-summary" role="status"></p>
+                    <div class="bars" id="hourlyChart"></div>
+                </div>
+
+
+
+
+                <div class="two-col">
+
+
+                    <div>
+
+
+                        <div class="section-head">
+                            <div>
+                                <h2>Three-day weather forecast</h2>
+                                <p>
+                                    Forecast for your selected or detected location
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <div class="panel pad">
+
+
+                            <div class="forecast" id="forecast">
+                                Loading forecast...
+                            </div>
+
+
+                            <p class="muted small">
+                                Forecast precipitation is model-based and is not
+                                an official flood warning.
+                            </p>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div>
+
+
+                        <div class="section-head">
+                            <h2 data-i18n="safe_title">Stay safe. Be ready.</h2>
+                        </div>
+
+
+                        <div class="panel pad">
+
+
+                            <div class="safety-item">
+                                <strong data-i18n="safe1_t">Know your evacuation routes</strong>
+                                <p data-i18n="safe1_d">
+                                    Follow your local government's evacuation instructions.
+                                </p>
+                            </div>
+
+
+                            <div class="safety-item">
+                                <strong data-i18n="safe2_t">Prepare an emergency kit</strong>
+                                <p data-i18n="safe2_d">
+                                    Keep drinking water, medicines, important documents
+                                    and a flashlight ready.
+                                </p>
+                            </div>
+
+
+                            <div class="safety-item">
+                                <strong data-i18n="safe3_t">Monitor official announcements</strong>
+                                <p data-i18n="safe3_d">
+                                    Check PAGASA and your city or municipality's
+                                    disaster response office.
+                                </p>
+                            </div>
+
+
+                            <div class="safety-item">
+                                <strong data-i18n="safe4_t">Avoid floodwater</strong>
+                                <p data-i18n="safe4_d">
+                                    Do not walk or drive through flooded roads.
+                                </p>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- ==================================
+         GOVERNMENT SOURCES
+    ================================== -->
+
+
+            <section class="dashboard-section" id="sourcesSection">
+
+
+                <div class="section-head">
+
+
+                    <div>
+                        <h2>
+                            Government flood and hazard information sources
+                        </h2>
+
+
+                        <p>
+                            Official agencies and government-supported hazard tools
+                        </p>
+                    </div>
+
+
+                </div>
+
+
+                <div class="directory">
+
+
+                    <div class="panel">
+                        <span class="tag">Weather and flood bulletins</span>
+
+
+                        <h3 style="margin-top:12px">DOST-PAGASA</h3>
+
+
+                        <p>
+                            Official weather forecasts, heavy rainfall warnings,
+                            tropical cyclone bulletins and flood information.
+                        </p>
+
+
+                        <a href="https://www.pagasa.dost.gov.ph/" target="_blank" rel="noopener noreferrer">
+                            Visit PAGASA ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Flood information</span>
+
+
+                        <h3 style="margin-top:12px">
+                            PAGASA Flood Service
+                        </h3>
+
+
+                        <p>
+                            Hydrological and flood bulletins, including information
+                            relevant to NCR river basins when available.
+                        </p>
+
+
+                        <a href="https://pagasa.dost.gov.ph/flood" target="_blank" rel="noopener noreferrer">
+                            View flood information ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Hazard assessment</span>
+
+
+                        <h3 style="margin-top:12px">
+                            HazardHunterPH
+                        </h3>
+
+
+                        <p>
+                            Location-based assessments for natural hazards.
+                            Flood susceptibility is not the same as a live warning.
+                        </p>
+
+
+                        <a href="https://hazardhunter.georisk.gov.ph/" target="_blank" rel="noopener noreferrer">
+                            Open HazardHunterPH ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Geospatial information</span>
+
+
+                        <h3 style="margin-top:12px">
+                            GeoRiskPH
+                        </h3>
+
+
+                        <p>
+                            Government-supported hazard and risk information
+                            tools for planning and preparedness.
+                        </p>
+
+
+                        <a href="https://georisk.gov.ph/" target="_blank" rel="noopener noreferrer">
+                            Visit GeoRiskPH ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Geohazard information</span>
+
+
+                        <h3 style="margin-top:12px">
+                            DENR-MGB
+                        </h3>
+
+
+                        <p>
+                            Geohazard assessments and maps, including
+                            flood susceptibility information.
+                        </p>
+
+
+                        <a href="https://mgb.gov.ph/" target="_blank" rel="noopener noreferrer">
+                            Visit DENR-MGB ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Disaster preparedness</span>
+
+
+                        <h3 style="margin-top:12px">
+                            NDRRMC / OCD
+                        </h3>
+
+
+                        <p>
+                            Disaster risk reduction, preparedness and
+                            national emergency coordination information.
+                        </p>
+
+
+                        <a href="https://ndrrmc.gov.ph/" target="_blank" rel="noopener noreferrer">
+                            Visit NDRRMC ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Metro Manila government</span>
+
+
+                        <h3 style="margin-top:12px">
+                            MMDA
+                        </h3>
+
+
+                        <p>
+                            Metro Manila public information and agency
+                            announcements related to metropolitan services.
+                        </p>
+
+
+                        <a href="https://mmda.gov.ph/" target="_blank" rel="noopener noreferrer">
+                            Visit MMDA ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Weather data provider</span>
+
+
+                        <h3 style="margin-top:12px">
+                            Open-Meteo
+                        </h3>
+
+
+                        <p>
+                            Numerical weather forecast API powering
+                            the weather cards in this prototype.
+                        </p>
+
+
+                        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">
+                            View provider ↗
+                        </a>
+                    </div>
+
+
+                    <div class="panel">
+                        <span class="tag">Map provider</span>
+
+
+                        <h3 style="margin-top:12px">
+                            OpenStreetMap
+                        </h3>
+
+
+                        <p>
+                            Collaborative geographic mapping used as
+                            the base layer of the interactive NCR map.
+                        </p>
+
+
+                        <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer">
+                            Visit OpenStreetMap ↗
+                        </a>
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- ==================================
+         ABOUT BABAW
+    ================================== -->
+
+
+            <section class="dashboard-section" id="aboutSection" aria-labelledby="aboutTitle">
+
+
+                <div class="section-head">
+
+
+                    <div>
+                        <h2 id="aboutTitle">About BaBaW</h2>
+                        <p>
+                            Learn more about our purpose, mission, and the people behind the platform
+                        </p>
+                    </div>
+
+
+                    <span class="tag">ABOUT THE PROJECT</span>
+
+
+                </div>
+
+
+                <div class="about-intro">
+
+
+                    <div class="about-intro-content">
+
+
+                        <span class="about-label">
+                            BANTAY BAHA WARNING SYSTEM
+                        </span>
+
+
+                        <h2>
+                            Building a more informed and flood-ready NCR.
+                        </h2>
+
+
+                        <p>
+                            BaBaW is a location-aware flood information platform
+                            designed to help communities access useful weather
+                            information, explore geographic locations, and find
+                            reliable government resources in one convenient place.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="about-symbol">⌖</div>
+
+
+                </div>
+
+
+                <div class="about-grid">
+
+
+                    <!-- PURPOSE -->
+
+
+                    <div class="panel about-card">
+
+
+                        <div class="about-icon">◎</div>
+
+
+                        <h3>Our Purpose</h3>
+
+
+                        <p>
+                            BaBaW (Bantay Baha Warning System) is an academic
+                            project developed to provide residents of the National
+                            Capital Region with an accessible and user-friendly
+                            flood information dashboard.
+                        </p>
+
+
+                        <p>
+                            The platform combines location-based weather forecasts,
+                            an interactive NCR map, and links to official government
+                            flood and disaster preparedness resources.
+                        </p>
+
+
+                    </div>
+
+
+                    <!-- MISSION -->
+
+
+                    <div class="panel about-card">
+
+
+                        <div class="about-icon">◇</div>
+
+
+                        <h3>Our Mission</h3>
+
+
+                        <p>
+                            Our mission is to improve access to flood-related
+                            information by presenting relevant resources through
+                            a simple, organized, and understandable interface.
+                        </p>
+
+
+                        <p>
+                            Through this platform, we aim to encourage greater
+                            awareness, preparedness, and responsible decision-making
+                            among communities vulnerable to flooding.
+                        </p>
+
+
+                    </div>
+
+
+                    <!-- IMPORTANT INFORMATION -->
+
+
+                    <div class="panel about-card">
+
+
+                        <div class="about-icon">ⓘ</div>
+
+
+                        <h3>Important Information</h3>
+
+
+                        <p>
+                            BaBaW is an academic prototype and is not an official
+                            flood warning or emergency response service.
+                        </p>
+
+
+                        <p>
+                            The platform is not affiliated with PAGASA, NDRRMC,
+                            or any other government agency. For official warnings,
+                            evacuation announcements, and emergency instructions,
+                            always follow authorized government sources and your
+                            local Disaster Risk Reduction and Management Office.
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ==================================
+           MEET THE MEMBERS
+      ================================== -->
+
+
+                <div class="members" id="members">
+
+
+                    <div class="section-head">
+
+
+                        <div>
+                            <span class="tag">OUR TEAM</span>
+
+
+                            <h2 class="members-heading">
+                                Meet the Members
+                            </h2>
+
+
+                            <p>
+                                Get to know the people behind this project.
+                            </p>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="members-grid">
+
+
+                        <!-- MA. ANDREA C. CERVANTES -->
+
+
+                        <article class="panel member-card">
+
+
+                            <div class="member-avatar">AC</div>
+
+
+                            <span class="member-label">
+                                TEAM MEMBER 01
+                            </span>
+
+
+                            <h3>Ma. Andrea C. Cervantes</h3>
+
+
+                            <p class="member-description">
+                                Full-time student, part-time mother to dozens of unfinished projects of all kinds.
+                            </p>
+
+
+                            <div class="member-details">
+
+
+                                <span class="member-detail-label">
+                                    PROGRAM
+                                </span>
+
+
+                                <p>
+                                    <b>Bachelor of Science in Computer Engineering</b>
+                                </p>
+
+
+                                <span class="member-detail-label">
+                                    MOTTO IN LIFE
+                                </span>
+
+
+                                <p class="member-motto">
+                                    <b>When faced with a decision to choose one amongst many paths,
+                                        sometimes it's better
+                                        to take the longer yet scenic route.</b>
+                                </p>
+
+
+                            </div>
+
+
+                        </article>
+
+
+                        <!-- ROBERT JOHN DIZON -->
+
+
+                        <article class="panel member-card">
+
+
+                            <div class="member-avatar">RD</div>
+
+
+                            <span class="member-label">
+                                TEAM MEMBER 02
+                            </span>
+
+
+                            <h3>Robert John Dizon</h3>
+
+
+                            <p class="member-description">
+                                A Computer Engineering student with a curious mind and bad habit to make wrong
+                                decisions.
+                            </p>
+
+
+                            <div class="member-details">
+
+
+                                <span class="member-detail-label">
+                                    PROGRAM
+                                </span>
+
+
+                                <p>
+                                    <b>Bachelor of Science in Computer Engineering</b>
+                                </p>
+
+
+                                <span class="member-detail-label">
+                                    MOTTO IN LIFE
+                                </span>
+
+
+                                <p class="member-motto">
+                                    <b>Determined by curiosity, powered by creativity, and occasionally
+                                        defeated by
+                                        semicolons.</b>
+                                </p>
+
+
+                            </div>
+
+
+                        </article>
+
+
+                        <!-- SEAN ANDREI P EVANGELISTA -->
+
+
+                        <article class="panel member-card">
+
+
+                            <div class="member-avatar">SE</div>
+
+
+                            <span class="member-label">
+                                TEAM MEMBER 03
+                            </span>
+
+
+                            <h3>Sean Andrei P Evangelista</h3>
+
+
+                            <p class="member-description">
+                                I am a Computer Engineering student in TIP. I will continue to work hard to achieve
+                                my dream and i am
+                                not afraid of failure because that only means that I can learn new things and improve my
+                                self.
+                            </p>
+
+
+                            <div class="member-details">
+
+
+                                <span class="member-detail-label">
+                                    PROGRAM
+                                </span>
+
+
+                                <p>
+                                    <b>Bachelor of Science in Computer Engineering</b>
+                                </p>
+
+
+                                <span class="member-detail-label">
+                                    MOTTO IN LIFE
+                                </span>
+
+
+                                <p class="member-motto">
+                                    <b>Start where you are, use what you have, do what you can.</b>
+                                </p>
+
+
+                            </div>
+
+
+                        </article>
+
+
+                        <!-- Miguel Adrian R. Gammad -->
+
+
+                        <article class="panel member-card">
+
+
+                            <div class="member-avatar">MG</div>
+
+
+                            <span class="member-label">
+                                TEAM MEMBER 04
+                            </span>
+
+
+                            <h3>Miguel Adrian R. Gammad</h3>
+
+
+                            <p class="member-description">
+                                A Computer engineering student who loves hardware and software but hates math.
+                            </p>
+
+
+                            <div class="member-details">
+
+
+                                <span class="member-detail-label">
+                                    PROGRAM
+                                </span>
+
+
+                                <p>
+                                    <b>Bachelor of Science in Computer Engineering</b>
+                                </p>
+
+
+                                <span class="member-detail-label">
+                                    MOTTO IN LIFE
+                                </span>
+
+
+                                <p class="member-motto">
+                                    <b>Try and try until you die</b>
+                                </p>
+
+
+                            </div>
+
+
+                        </article>
+
+
+                        <!-- Prince Adrian M. Mangana -->
+
+
+                        <article class="panel member-card">
+
+
+                            <div class="member-avatar">PM</div>
+
+
+                            <span class="member-label">
+                                TEAM MEMBER 05
+                            </span>
+
+
+                            <h3>Prince Adrian M. Mangana</h3>
+
+
+                            <p class="member-description">
+                                A Computer Engineering student exploring the world of technology, turning random ideas
+                                into projects,
+                                and learning something new with every mistake.
+                            </p>
+
+
+                            <div class="member-details">
+
+
+                                <span class="member-detail-label">
+                                    PROGRAM
+                                </span>
+
+
+                                <p>
+                                    <b>Bachelor of Science in Computer Engineering</b>
+                                </p>
+
+
+                                <span class="member-detail-label">
+                                    MOTTO IN LIFE
+                                </span>
+
+
+                                <p class="member-motto">
+                                    <b>Think beyond limits, create with purpose, and let every error lead
+                                        to a new
+                                        discovery.</b>
+                                </p>
+
+
+                            </div>
+
+
+                        </article>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ABOUT FOOTER -->
+
+
+                <div class="about-footer">
+
+
+                    <div>
+                        <strong>
+                            Stay informed. Stay prepared.
+                        </strong>
+
+
+                        <p>
+                            Reliable information is an important part of
+                            building safer and more resilient communities.
+                        </p>
+                    </div>
+
+
+                    <a href="https://www.pagasa.dost.gov.ph/" target="_blank" rel="noopener noreferrer"
+                        class="btn-light">
+                        Visit PAGASA ↗
+                    </a>
+
+
+                </div>
+
+
+            </section>
+
+
+            <section class="dashboard-section" id="hotlinesSection">
+                <div class="section-head">
+                    <div>
+                        <h2>Emergency hotlines</h2>
+                        <p>Tap a number to call on mobile</p>
+                    </div>
+                </div>
+                <div class="directory">
+                    <div class="panel">
+                        <span class="tag">National emergency</span>
+                        <h3 style="margin-top:12px">911</h3>
+                        <a href="tel:911">Call 911</a>
+                    </div>
+                    <div class="panel">
+                        <span class="tag">Philippine Red Cross</span>
+                        <h3 style="margin-top:12px">143</h3>
+                        <a href="tel:143">Call 143</a>
+                    </div>
+                    <div class="panel">
+                        <span class="tag">MMDA</span>
+                        <h3 style="margin-top:12px">136</h3>
+                        <a href="tel:136">Call 136</a>
+                    </div>
+                    <div class="panel">
+                        <span class="tag">Your city DRRMO</span>
+                        <h3 style="margin-top:12px" id="drrmoOffice">—</h3>
+                        <p id="drrmoPhone"></p>
+                        <a id="drrmoCall" class="hidden" href="#">Call</a>
+                    </div>
+                </div>
+                <p class="muted small">
+                    Verify numbers on official sites before relying on them. Add your
+                    city's DRRMO hotline for the selected city.
+                </p>
+            </section>
+
+
+            <!-- ==================================
+         FINAL BANNER
+    ================================== -->
+
+
+            <div class="footer-banner">
+
+
+                <div>
+                    <h2>
+                        Information today. Better preparation tomorrow.
+                    </h2>
+
+
+                    <p>
+                        Verify official flood advisories and follow your local authorities.
+                    </p>
+                </div>
+
+
+                <a href="https://www.pagasa.dost.gov.ph/" target="_blank" rel="noopener noreferrer">
+                    Check PAGASA ↗
+                </a>
+
+
+            </div>
+
+
+        </main>
+
+
+        <footer>
+            © 2026 BaBaW · NCR Flood Information Platform
+            <br>
+            Academic prototype · Not an official emergency warning service
+        </footer>
+
+
+    </div>
+
+
+    <!-- ======================================
+     JAVASCRIPT
+====================================== -->
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div id="profileModal" class="profile-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+  <section class="profile-panel">
+    <div class="profile-top"><h2 id="profileTitle">My profile</h2><button type="button" id="profileClose" class="btn-light" aria-label="Close profile">✕</button></div>
+    <p id="profileHint" class="profile-muted"></p>
+    <form id="profileForm">
+      <label for="profileName">Display name</label>
+      <input id="profileName" type="text" maxlength="80" minlength="2" required autocomplete="name">
+      <label for="profileEmail">Email address</label>
+      <input id="profileEmail" type="text" readonly>
+      <p id="profileMessage" role="status" aria-live="polite" class="profile-muted"></p>
+      <button id="profileSave" type="submit" class="btn">Save changes</button>
+    </form>
+    <div id="deleteZone">
+  <hr>
+  <p class="profile-muted">Delete account: this permanently removes your account and can't be undone.</p>
+  <label for="deletePassword">Enter your password to confirm</label>
+  <input id="deletePassword" type="password" autocomplete="current-password">
+  <p id="deleteMessage" role="status" class="profile-muted"></p>
+  <button type="button" id="deleteAccountBtn" class="btn-light">Delete my account</button>
+</div>
+  </section>
+</div>
+
+<!-- ======================================
+     JAVASCRIPT
+====================================== -->
+
+<div id="loader" class="loader hidden" role="status" aria-live="polite">
+    <div class="brand-logo logo-slot"></div>
+    <div class="spinner"></div>
+    <p>Loading your flood outlook…</p>
+</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+
+</html>
+
